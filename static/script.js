@@ -9,9 +9,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const resetBtn = document.getElementById('reset-btn');
     const locationInput = document.getElementById('location');
 
+    const locateBtn = document.getElementById('locate-btn');
+
     // Geolocation Logic
-    if ("geolocation" in navigator) {
+    async function startGeolocation() {
+        if (!("geolocation" in navigator)) {
+            console.log("Geolocation not supported");
+            return;
+        }
+
         locationInput.placeholder = "Locating you...";
+
         navigator.geolocation.getCurrentPosition(async (position) => {
             const { latitude, longitude } = position.coords;
             try {
@@ -21,16 +29,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 const placeName = data.address.city || data.address.town || data.address.village || data.address.hamlet || data.name;
                 if (placeName) {
                     locationInput.value = placeName;
+                    locationInput.placeholder = ""; // Restore/Clear placeholder
                 }
             } catch (error) {
                 console.error("Error fetching location name:", error);
-                locationInput.placeholder = "e.g., Eiffel Tower, Paris";
+                locationInput.placeholder = "";
             }
         }, (error) => {
             console.log("Geolocation error:", error);
-            locationInput.placeholder = "e.g., Eiffel Tower, Paris";
+            locationInput.placeholder = "";
         });
     }
+
+    // Run on load
+    startGeolocation();
+
+    // Run on click
+    locateBtn.addEventListener('click', () => {
+        // Clear current value if any to show we are re-locating
+        locationInput.value = '';
+        startGeolocation();
+    });
 
     // Travel Mode Checkbox Logic (Mutual Exclusivity)
     const modeWalking = document.getElementById('mode-walking');

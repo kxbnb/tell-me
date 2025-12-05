@@ -73,13 +73,29 @@ label {
 
 input[type="text"] {
     width: 100%;
-    padding: 14px 16px 14px 44px;
+    padding: 14px 44px 14px 44px;
     background: var(--input-bg);
     border: 1px solid var(--border-color);
     border-radius: 8px;
     color: var(--text-light);
     font-size: 1rem;
     font-family: var(--font-main);
+}
+
+#locate-btn {
+    position: absolute;
+    right: 16px;
+    left: auto;
+    /* Override default left positioning for icons */
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+#locate-btn:hover {
+    color: var(--primary);
 }
 
 input[type="text"]:focus {

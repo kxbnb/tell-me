@@ -33,14 +33,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } catch (error) {
                 console.error("Error fetching location name:", error);
-                locationInput.placeholder = "e.g., Eiffel Tower, Paris";
+                locationInput.placeholder = "";
                 // Only alert if it's a manual click (we can check placeholder or passed arg, 
                 // but checking placeholder "Locating you..." is a proxy or we can just fail silently for address lookup 
                 // and let the coordinate fill happen if we want, but here we only fill if we get a name)
             }
         }, (error) => {
             console.log("Geolocation error:", error);
-            locationInput.placeholder = "e.g., Eiffel Tower, Paris";
+            locationInput.placeholder = "";
             alert("Could not locate you. Please check your permissions or enter location manually.");
         }, {
             enableHighAccuracy: true,

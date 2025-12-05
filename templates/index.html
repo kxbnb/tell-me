@@ -33,7 +33,8 @@
                     <label for="headed-towards">Headed towards (Optional)</label>
                     <div class="input-wrapper">
                         <i class="fa-solid fa-route"></i>
-                        <input type="text" id="headed-towards" name="headed_towards">
+                        <input type="text" id="headed-towards" name="headed_towards" autocomplete="off">
+                        <ul id="suggestions-list" class="suggestions-list hidden"></ul>
                     </div>
                 </div>
 
@@ -63,6 +64,20 @@
                         <label class="checkbox-btn">
                             <input type="checkbox" name="interests" value="Food">
                             <span>Food</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Travel Mode (Optional)</label>
+                    <div class="checkbox-grid" style="grid-template-columns: repeat(2, 1fr);">
+                        <label class="checkbox-btn">
+                            <input type="checkbox" name="travel_mode" value="Walking" id="mode-walking">
+                            <span>Walking</span>
+                        </label>
+                        <label class="checkbox-btn">
+                            <input type="checkbox" name="travel_mode" value="Car" id="mode-car">
+                            <span>Car</span>
                         </label>
                     </div>
                 </div>

@@ -26,6 +26,7 @@ from typing import Optional
 class GenerateRequest(BaseModel):
     location: str
     headed_towards: Optional[str] = None
+    travel_mode: Optional[str] = None
     interests: list[str] = []
 
 @app.get("/", response_class=HTMLResponse)
@@ -38,9 +39,15 @@ async def generate_script(request: GenerateRequest):
         # 1. Generate Script with OpenAI (Text)
         client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
         
-        prompt = f"Write a 30 second engaging travel script (approx 150 words) about {request.location}."
+        prompt = f"Write a 30 second engaging travel script (approx 75 words) about {request.location}."
         if request.headed_towards:
             prompt += f" The traveler is headed towards {request.headed_towards}."
+        
+        if request.travel_mode == "Walking":
+            prompt += " The traveler is walking, so point out details easily seen on foot."
+        elif request.travel_mode == "Car":
+            prompt += " The traveler is driving, so focus on major landmarks and scenic views visible from the road."
+
         if request.interests:
             prompt += f" Focus on these interests: {', '.join(request.interests)}."
         prompt += " The tone should be excited and informative. Do not include any scene directions, just the spoken text."
@@ -71,6 +78,32 @@ async def generate_script(request: GenerateRequest):
     #except Exception as e:
     #    print(f"Error: {e}")
     #    raise HTTPException(status_code=500, detail=str(e))
+
+class SuggestRequest(BaseModel):
+    location: str
+
+@app.post("/api/suggest")
+async def suggest_destinations(request: SuggestRequest):
+    try:
+        client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+        
+        prompt = f"List 3 popular landmarks or interesting destinations near {request.location}. Return only a JSON array of strings, e.g. [\"Place 1\", \"Place 2\"]"
+        
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful travel assistant. Output only valid JSON."},
+                {"role": "user", "content": prompt}
+            ]
+        )
+        
+        content = response.choices[0].message.content
+        import json
+        suggestions = json.loads(content)
+        return {"suggestions": suggestions}
+    except Exception as e:
+        print(f"Error fetching suggestions: {e}")
+        return {"suggestions": []}
 
 if __name__ == "__main__":
     uvicorn.run("api.index:app", host="0.0.0.0", port=8000, reload=True)

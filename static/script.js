@@ -32,6 +32,76 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Travel Mode Checkbox Logic (Mutual Exclusivity)
+    const modeWalking = document.getElementById('mode-walking');
+    const modeCar = document.getElementById('mode-car');
+
+    function handleModeChange(changedCheckbox, otherCheckbox) {
+        if (changedCheckbox.checked) {
+            otherCheckbox.checked = false;
+        }
+    }
+
+    modeWalking.addEventListener('change', () => handleModeChange(modeWalking, modeCar));
+    modeCar.addEventListener('change', () => handleModeChange(modeCar, modeWalking));
+
+    // Suggestions Logic
+    const headedTowardsInput = document.getElementById('headed-towards');
+    const suggestionsList = document.getElementById('suggestions-list');
+
+    headedTowardsInput.addEventListener('focus', async () => {
+        const locationVal = locationInput.value;
+        if (!locationVal) return;
+
+        // Debounce or just check if we already have suggestions? 
+        // For simplicity, fetch fresh or show generic loader. 
+        // Ideally we might want to suggest based on the location.
+
+        suggestionsList.classList.remove('hidden');
+        suggestionsList.innerHTML = '<li style="cursor: default;">Loading suggestions...</li>';
+
+        try {
+            const response = await fetch('/api/suggest', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ location: locationVal })
+            });
+
+            const data = await response.json();
+            const suggestions = data.suggestions || [];
+
+            suggestionsList.innerHTML = ''; // Clear loader
+
+            if (suggestions.length === 0) {
+                suggestionsList.innerHTML = '<li style="cursor: default;">No suggestions found</li>';
+                return;
+            }
+
+            suggestions.forEach(place => {
+                const li = document.createElement('li');
+                li.textContent = place;
+                li.addEventListener('click', () => {
+                    headedTowardsInput.value = place;
+                    suggestionsList.classList.add('hidden');
+                });
+                li.addEventListener('mousedown', (e) => e.preventDefault()); // Prevent blur before click
+                suggestionsList.appendChild(li);
+            });
+
+        } catch (e) {
+            console.error(e);
+            suggestionsList.innerHTML = '<li style="cursor: default;">Error loading suggestions</li>';
+        }
+    });
+
+    // Hide suggestions on blur (delayed to allow click)
+    headedTowardsInput.addEventListener('blur', () => {
+        // Small delay to allow click event to register
+        setTimeout(() => {
+            suggestionsList.classList.add('hidden');
+        }, 200);
+    });
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -41,9 +111,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const headedTowards = formData.get('headed_towards');
         const interests = formData.getAll('interests');
 
+        // Get travel mode manually since checkboxes might behave differently with FormData
+        let travelMode = null;
+        if (modeWalking.checked) travelMode = 'Walking';
+        if (modeCar.checked) travelMode = 'Car';
+
         // UI Loading State
         setLoading(true);
         resultsSection.classList.add('hidden');
+        audioPlayer.pause();
+        audioPlayer.currentTime = 0;
 
         try {
             const response = await fetch('/api/generate', {
@@ -54,6 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({
                     location: location,
                     headed_towards: headedTowards || null,
+                    travel_mode: travelMode,
                     interests: interests
                 }),
             });

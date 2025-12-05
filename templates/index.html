@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tell Me - Travel Insights</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <main class="container">
+        <div>
+            <header>
+                <h1>Tell Me</h1>
+                <p class="subtitle">Discover the stories of the places you go.</p>
+            </header>
+
+            <form id="travel-form">
+                <div class="input-group">
+                    <label for="location">Where are you?</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <input type="text" id="location" name="location" placeholder="e.g., Eiffel Tower, Paris"
+                            required value="Pittsford, NY">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="headed-towards">Headed towards (Optional)</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-route"></i>
+                        <input type="text" id="headed-towards" name="headed_towards" placeholder="e.g., The Louvre"
+                            value="Lima, NY">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Interests</label>
+                    <div class="checkbox-grid">
+                        <label class="checkbox-btn">
+                            <input type="checkbox" name="interests" value="Arts">
+                            <span>Arts</span>
+                        </label>
+                        <label class="checkbox-btn">
+                            <input type="checkbox" name="interests" value="History">
+                            <span>History</span>
+                        </label>
+                        <label class="checkbox-btn">
+                            <input type="checkbox" name="interests" value="Nature">
+                            <span>Nature</span>
+                        </label>
+                        <label class="checkbox-btn">
+                            <input type="checkbox" name="interests" value="Architecture">
+                            <span>Architecture</span>
+                        </label>
+                        <label class="checkbox-btn">
+                            <input type="checkbox" name="interests" value="Culture">
+                            <span>Culture</span>
+                        </label>
+                        <label class="checkbox-btn">
+                            <input type="checkbox" name="interests" value="Food">
+                            <span>Food</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" id="submit-btn">
+                    <span class="btn-text">Tell Me</span>
+                    <span class="loader hidden"></span>
+                </button>
+            </form>
+
+            <div id="results" class="results-section hidden">
+                <div class="divider"></div>
+                <h2>Your Story</h2>
+                <div class="audio-player-wrapper">
+                    <audio id="audio-player" controls class="custom-audio"></audio>
+                </div>
+                <div class="script-content">
+                    <p id="script-text"></p>
+                </div>
+                <button id="reset-btn" class="secondary-btn">Start Over</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>

@@ -69,6 +69,8 @@ label {
     top: 50%;
     transform: translateY(-50%);
     color: var(--text-dim);
+    pointer-events: none;
+    /* Default for icons, but we override for locate-icon */
 }
 
 input[type="text"] {
@@ -82,19 +84,16 @@ input[type="text"] {
     font-family: var(--font-main);
 }
 
-#locate-btn {
-    position: absolute;
-    right: 16px;
-    left: auto;
-    /* Override default left positioning for icons */
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-dim);
+#locate-icon {
+    /* Inherits position from .input-wrapper i, but we can be explicit or just add interactive props */
     cursor: pointer;
     transition: color 0.2s;
+    z-index: 10;
+    pointer-events: auto;
+    /* Enable clicking */
 }
 
-#locate-btn:hover {
+#locate-icon:hover {
     color: var(--primary);
 }
 

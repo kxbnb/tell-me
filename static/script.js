@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const resetBtn = document.getElementById('reset-btn');
     const locationInput = document.getElementById('location');
 
-    const locateBtn = document.getElementById('locate-btn');
+    const locateBtn = document.getElementById('locate-icon');
 
     // Geolocation Logic
     async function startGeolocation() {
@@ -33,11 +33,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } catch (error) {
                 console.error("Error fetching location name:", error);
-                locationInput.placeholder = "";
+                locationInput.placeholder = "e.g., Eiffel Tower, Paris";
+                // Only alert if it's a manual click (we can check placeholder or passed arg, 
+                // but checking placeholder "Locating you..." is a proxy or we can just fail silently for address lookup 
+                // and let the coordinate fill happen if we want, but here we only fill if we get a name)
             }
         }, (error) => {
             console.log("Geolocation error:", error);
-            locationInput.placeholder = "";
+            locationInput.placeholder = "e.g., Eiffel Tower, Paris";
+            alert("Could not locate you. Please check your permissions or enter location manually.");
+        }, {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
         });
     }
 

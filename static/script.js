@@ -7,6 +7,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const scriptText = document.getElementById('script-text');
     const audioPlayer = document.getElementById('audio-player');
     const resetBtn = document.getElementById('reset-btn');
+    const locationInput = document.getElementById('location');
+
+    // Geolocation Logic
+    if ("geolocation" in navigator) {
+        locationInput.placeholder = "Locating you...";
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            const { latitude, longitude } = position.coords;
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+                const data = await response.json();
+                // Prioritize city, town, village, or display_name
+                const placeName = data.address.city || data.address.town || data.address.village || data.address.hamlet || data.name;
+                if (placeName) {
+                    locationInput.value = placeName;
+                }
+            } catch (error) {
+                console.error("Error fetching location name:", error);
+                locationInput.placeholder = "e.g., Eiffel Tower, Paris";
+            }
+        }, (error) => {
+            console.log("Geolocation error:", error);
+            locationInput.placeholder = "e.g., Eiffel Tower, Paris";
+        });
+    }
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -51,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
             resultsSection.scrollIntoView({ behavior: 'smooth' });
 
             // Auto-play audio (optional, browsers might block)
-            // audioPlayer.play().catch(e => console.log("Auto-play blocked"));
+            audioPlayer.play().catch(e => console.log("Auto-play blocked", e));
 
         } catch (error) {
             console.error('Error:', error);

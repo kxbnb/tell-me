@@ -38,7 +38,7 @@ async def generate_script(request: GenerateRequest):
         # 1. Generate Script with OpenAI (Text)
         client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
         
-        prompt = f"Write a 1-minute engaging travel script (approx 150 words) about {request.location}."
+        prompt = f"Write a 30 second engaging travel script (approx 150 words) about {request.location}."
         if request.headed_towards:
             prompt += f" The traveler is headed towards {request.headed_towards}."
         if request.interests:

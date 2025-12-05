@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
@@ -35,7 +35,7 @@ async def read_root(request: Request):
 
 @app.post("/api/generate")
 async def generate_script(request: GenerateRequest):
-    #try:
+    try:
         # 1. Generate Script with OpenAI (Text)
         client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
         
@@ -62,7 +62,6 @@ async def generate_script(request: GenerateRequest):
         script_text = response.choices[0].message.content
 
         # 2. Generate Audio with OpenAI
-        
         audio_response = client.audio.speech.create(
             model="tts-1",
             voice="alloy",
@@ -75,9 +74,9 @@ async def generate_script(request: GenerateRequest):
 
         return {"script": script_text, "audio_url": audio_url}
 
-    #except Exception as e:
-    #    print(f"Error: {e}")
-    #    raise HTTPException(status_code=500, detail=str(e))
+    except Exception as e:
+       print(f"Error: {e}")
+       raise HTTPException(status_code=500, detail=str(e))
 
 class SuggestRequest(BaseModel):
     location: str

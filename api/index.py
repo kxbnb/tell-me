@@ -106,3 +106,4 @@ async def suggest_destinations(request: SuggestRequest):
 
 if __name__ == "__main__":
     uvicorn.run("api.index:app", host="0.0.0.0", port=8000, reload=True)
+    #uvicorn api.index:app --reload --host 0.0.0.0 --port 8000
